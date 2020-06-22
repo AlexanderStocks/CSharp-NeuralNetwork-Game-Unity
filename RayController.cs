@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Super class to any instance that will be colliding
+[RequireComponent (typeof (BoxCollider2D))]
 public class RayController : MonoBehaviour
 {
     private LayerMask rayLayer;
@@ -18,7 +19,7 @@ public class RayController : MonoBehaviour
     private float hSpacing;
     private float vSpacing;
 
-    private const int NUMBER_TO_DECREASE_INDENT_BY = 2;
+    private const int NUMBER_TO_DECREASE_INDENT_BY = -2;
     // Start is called before the first frame update
     public virtual void Start()
     {

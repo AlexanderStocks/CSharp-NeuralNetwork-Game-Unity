@@ -22,7 +22,7 @@ public class Player : RayController
     }
 
     // Update is called once per frame
-    public void UpdateFromInitPlayer(Vector3 velocity)
+    public void UpdateFromPlayer(Vector3 velocity)
     {
         UpdateRayStruct();
         sideOfCollision.clear();
@@ -44,7 +44,6 @@ public class Player : RayController
     void collisionH(ref Vector3 velocity) 
     {
         float xPolarity = Mathf.Sign(velocity.x);
-
         float lengthOfRay = Mathf.Abs(velocity.x) + indent;
 
         for (int i = 0; i < GetHRayCount(); i++)
@@ -69,7 +68,6 @@ public class Player : RayController
     void collisionV(ref Vector3 velocity) 
     {
         float yPolarity = Mathf.Sign(velocity.y);
-
         float lengthOfRay = Mathf.Abs(velocity.y) + indent;
 
         for (int i = 0; i < GetVRayCount(); i++)

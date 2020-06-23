@@ -19,7 +19,7 @@ public class RayController : MonoBehaviour
     private float hSpacing;
     private float vSpacing;
 
-    private const int NUMBER_TO_DECREASE_INDENT_BY = -2;
+    private const int NUMBER_TO_DECREASE_INDENT_BY = 2;
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -89,5 +89,55 @@ public class RayController : MonoBehaviour
     public void SetVRayCount(int vRayCount)
     {
         this.vRayCount = vRayCount;
+    }
+
+    public struct SideOfCollision
+    {
+        private bool up, down, left, right;
+
+        public void clear()
+        {
+            up = down = left = right = false;
+        }
+
+        public bool getUp()
+        {
+            return up;
+        }
+
+        public bool getDown()
+        {
+            return down;
+        }
+
+        public bool getLeft()
+        {
+            return left;
+        }
+
+        public bool getRight()
+        {
+            return right;
+        }
+
+        public void setUp(bool value)
+        {
+            up = value;
+        }
+
+        public void setDown(bool value)
+        {
+            down = value;
+        }
+
+        public void setLeft(bool value)
+        {
+            left = value;
+        }
+
+        public void setRight(bool value)
+        {
+            right = value;
+        }
     }
 }

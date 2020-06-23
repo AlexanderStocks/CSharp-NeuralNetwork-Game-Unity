@@ -5,20 +5,11 @@ using UnityEngine;
 public class Player : RayController
 {
     public LayerMask playerLayer;
-
-    public SideOfCollision sideOfCollision;
-
-    private InitPlayer initPlayer;
-
-    private float gravity;
-    
-    
+  
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
-        initPlayer = GetComponent<InitPlayer>();
-        gravity = initPlayer.getGravity();
     }
 
     // Update is called once per frame
@@ -26,8 +17,6 @@ public class Player : RayController
     {
         UpdateRayStruct();
         sideOfCollision.clear();
-
-        gravity = initPlayer.getGravity();
 
         if (velocity.x != 0)
         {

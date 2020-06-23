@@ -20,6 +20,8 @@ public class RayController : MonoBehaviour
     private float vSpacing;
 
     private const int NUMBER_TO_DECREASE_INDENT_BY = 2;
+
+    public SideOfCollision sideOfCollision;
     // Start is called before the first frame update
     public virtual void Start()
     {

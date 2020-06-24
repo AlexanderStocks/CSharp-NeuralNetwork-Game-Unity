@@ -81,15 +81,44 @@ public class InitPlayer : MonoBehaviour
         if (player.sideOfCollision.getDown() && Input.GetKeyDown(KeyCode.Space))
         {
             velocity.y = JUMP_VELOCITY;
-        } else if (playerControl.sideOfCollision.getDown())
+        } 
+        else if (playerControl.sideOfCollision.getDown())
         {
             velocity.y = Mathf.Clamp(velocity.y, 0, float.MaxValue);
         }
 
-        velocity.x = userInput.x * PLAYER_SPEED;
-        velocity.y += gravity * Time.deltaTime;
+        if (gravityDirection == GravityDirection.DOWN || gravityDirection == GravityDirection.UP)
+        {
+            if ((player.sideOfCollision.getDown() || player.sideOfCollision.getUp()) && Input.GetKeyDown(KeyCode.Space))
+            {
+                velocity.y = -1 * Mathf.Sign(gravity) * JUMP_VELOCITY;
+            }
+            velocity.x += userInput.x * Time.deltaTime;
+
+            velocity.y = gravity * PLAYER_SPEED;
+        } 
+        else
+        {
+            if ((player.sideOfCollision.getLeft() || player.sideOfCollision.getRight()) && Input.GetKeyDown(KeyCode.Space))
+            {
+                velocity.x = -1 * Mathf.Sign(gravity) * JUMP_VELOCITY;
+            }
+            velocity.x += gravity * Time.deltaTime;
+
+            velocity.y =  userInput.y * PLAYER_SPEED;
+        }
 
         player.UpdateFromPlayer(velocity * Time.deltaTime);
+    }
+
+    public void DamagePlayer(int damage)
+    {
+        health -= damage;
+    }
+
+    public void AddHealth(int healthToAdd)
+    {
+        health += healthToAdd;
     }
 
     public float getGravity() {

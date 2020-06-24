@@ -13,8 +13,8 @@ public class RayController : MonoBehaviour
 
     public RayOriginStruct rayOrigin;
 
-    private int hRayCount = 4;
-    private int vRayCount = 4;
+    public int hRayCount = 4;
+    public int vRayCount = 4;
 
     private float hSpacing;
     private float vSpacing;

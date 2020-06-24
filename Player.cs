@@ -1,15 +1,42 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.WSA;
 
 public class Player : RayController
 {
     public LayerMask playerLayer;
-  
+    public LayerMask ropeable;
+    public LayerMask allowedToCollideWithPlayer;
+
+    private bool hanging;
+    private bool onRope;
+
+    private InitPlayer initPlayer;
+
+    private const float speedOfRope = 10;
+    private float gravity;
+
+    private Vector3 target;
+    private Vector3 cameraDirection;
+
+    private GameObject obstacles;
+    private GameObject aiController;
+
+    private const float maxAngleOfIncline = 65f;
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+
+        initPlayer = GetComponent<InitPlayer>();
+
+        gravity = initPlayer.getGravity();
+
+        onRope = false;
+        hanging = false;
+    
     }
 
     // Update is called once per frame
@@ -18,16 +45,82 @@ public class Player : RayController
         UpdateRayStruct();
         sideOfCollision.clear();
 
-        if (velocity.x != 0)
+        if (!onRope && !hanging)
         {
-            collisionH(ref velocity);
+            if (velocity.x != 0)
+            {
+                collisionH(ref velocity);
+            }
+
+            if (velocity.y != 0)
+            {
+                collisionV(ref velocity);
+            }
+            transform.Translate(velocity);
+        }
+        
+        if ((transform.position != target) && onRope && !hanging)
+        {
+            Launch(target);
         }
 
-        if (velocity.y != 0)
+        if (hanging && Input.GetKeyDown(KeyCode.Space))
         {
-            collisionV(ref velocity);
+            hanging = false;
+            velocity.y = 0;
         }
-       transform.Translate(velocity);
+    }
+
+    public void LaunchSetup()
+    {
+        cameraDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        cameraDirection.z = 0;
+        Vector3 direction = cameraDirection - transform.position;
+
+        RaycastHit2D contact = Physics2D.Raycast(transform.position, direction, Vector3.Magnitude(direction), ropeable);
+
+        if (contact)
+        {
+            target = contact.point;
+            target.z = 0;
+
+            onRope = true;
+
+            Launch(target);
+        }
+    }
+
+    private void RopeCollisions(Vector2 direction)
+    {
+        float angle = Mathf.Atan2(direction.y, direction.x);
+
+        float horizontalRopeSpeed = (float)(speedOfRope * Math.Cos(angle) + indent);
+        float verticalRopeSpeed = speedOfRope * Mathf.Sin(angle) + indent;
+
+        for (int i = -1 ; i < 1; i++)
+        {
+            if (hanging)
+            {
+                break;
+            }
+
+            if (i == 0)
+            {
+                i = 1;
+            }
+
+            float lengthOfRay = speedOfRope * indent + indent;
+
+            Vector3 ropeVelocity = new Vector3(horizontalRopeSpeed, verticalRopeSpeed);
+            Vector3 negRopeVelocity = new Vector3(-horizontalRopeSpeed, -verticalRopeSpeed);
+            
+            collisionH(ref ropeVelocity);
+            collisionH(ref negRopeVelocity);
+
+            collisionV(ref ropeVelocity);
+            collisionV(ref negRopeVelocity);
+        }
+
     }
 
     void collisionH(ref Vector3 velocity) 

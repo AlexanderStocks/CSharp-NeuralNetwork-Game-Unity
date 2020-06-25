@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class Player : RayController
     private GameObject aiController;
 
     private const float maxAngleOfIncline = 65f;
+
+    private const int DAMAGE_FROM_ENEMY = 20;
     // Start is called before the first frame update
     public override void Start()
     {
@@ -109,8 +112,6 @@ public class Player : RayController
                 i = 1;
             }
 
-            float lengthOfRay = speedOfRope * indent + indent;
-
             Vector3 ropeVelocity = new Vector3(horizontalRopeSpeed, verticalRopeSpeed);
             Vector3 negRopeVelocity = new Vector3(-horizontalRopeSpeed, -verticalRopeSpeed);
             
@@ -143,6 +144,27 @@ public class Player : RayController
 
                 this.sideOfCollision.setLeft(xPolarity == -1);
                 this.sideOfCollision.setRight(!sideOfCollision.getLeft());
+
+                if (onRope)
+                {
+                    hanging = true;
+                    onRope = false;
+
+                    break;
+                }
+
+                if ((sideOfCollision.getLeft() || sideOfCollision.getRight()) && contact.collider.CompareTag("Enemy"))
+                {
+                    initPlayer.DamagePlayer(DAMAGE_FROM_ENEMY);
+                }
+
+                float angle = Vector2.Angle(contact.normal, Vector2.up);
+                angle %= 90;
+
+                if (i == 0 && angle <= maxAngleOfIncline)
+                {
+                    InclineBoost(ref velocity, angle);
+                }
             }
         }
     }
@@ -169,8 +191,48 @@ public class Player : RayController
                 lengthOfRay = contact.distance;
 
                 this.sideOfCollision.setDown(yPolarity == -1);
-
                 this.sideOfCollision.setUp(!sideOfCollision.getDown());
+
+                if (onRope)
+                {
+                    hanging = true;
+                    onRope = false;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private void InclineBoost(ref Vector3 velocity, float angle)
+    {
+        float desiredVelocity = Mathf.Abs(velocity.x);
+        float inclineY = Mathf.Sin(angle * Mathf.PI / 180) * desiredVelocity;
+        
+        if (inclineY >=velocity.y)
+        {
+            velocity.y = inclineY;
+            velocity.x = Mathf.Cos(angle * Mathf.PI / 180) * desiredVelocity * Mathf.Sign(velocity.x);
+            
+            sideOfCollision.setDown(true);
+        }
+    }
+
+    private void Launch(Vector3 target)
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            onRope = false;
+        }
+        else
+        {
+            Vector3 direction = cameraDirection - transform.position;
+            RopeCollisions(direction);
+            transform.position = Vector3.MoveTowards(transform.position, target, speedOfRope * Time.deltaTime);
+
+            if (transform.position == target)
+            {
+                onRope = false;
             }
         }
     }

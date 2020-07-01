@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class PlatformController : RayController
 {
@@ -27,18 +25,23 @@ public class PlatformController : RayController
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    private void SetGlobalPoints()
-    {
         UpdateRayStruct();
-        
+
         Vector3 velocity = PlatformVelocity();
 
         Push(velocity);
 
         transform.Translate(velocity);
+    }
+
+    private void SetGlobalPoints()
+    {
+        globalPoints = new Vector3[localPoints.Length];
+
+        for (int i = 0; i < localPoints.Length; i++)
+        {
+            globalPoints[i] = localPoints[i] + transform.position;
+        }
     }
 
     private Vector3 PlatformVelocity()

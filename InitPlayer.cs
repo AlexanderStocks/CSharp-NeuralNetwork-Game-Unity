@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class InitPlayer : MonoBehaviour
 {
@@ -28,8 +29,7 @@ public class InitPlayer : MonoBehaviour
 
     private GravityDirection gravityDirection;
 
-    PlayerControl playerControl;//outputscript
-    // Start is called before the first frame update
+    Player playerControl;
     void Start()
     {
         health = START_HEALTH;
@@ -39,7 +39,7 @@ public class InitPlayer : MonoBehaviour
         gravityDirection = GravityDirection.DOWN;
         gravity = GRAVITY_STRENGTH * -1;
 
-        playerControl = GetComponent<PlayerControl>();
+        playerControl = GetComponent<Player>();
 
         health = START_HEALTH;
         isDead = false;
@@ -72,8 +72,8 @@ public class InitPlayer : MonoBehaviour
             isDead = true;
         }
 
-        //healthUI.gameObject.GetComponent<Text>().text = "Health: " + health;
-        //roundUI.gameObject.GetComponent<Text>().text = "Round: " + roundNumber;
+        healthUI.gameObject.GetComponent<Text>().text = "Health" + health;
+        roundUI.gameObject.GetComponent<Text>().text = "Round: " + roundNumber;
 
 
         Vector2 userInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));

@@ -1,9 +1,5 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using UnityEngine.WSA;
 
 public class Player : RayController
 {
@@ -17,13 +13,9 @@ public class Player : RayController
     private InitPlayer initPlayer;
 
     private const float speedOfRope = 10;
-    private float gravity;
 
     private Vector3 target;
     private Vector3 cameraDirection;
-
-    private GameObject obstacles;
-    private GameObject aiController;
 
     private const float maxAngleOfIncline = 65f;
 
@@ -35,7 +27,6 @@ public class Player : RayController
 
         initPlayer = GetComponent<InitPlayer>();
 
-        gravity = initPlayer.getGravity();
 
         onRope = false;
         hanging = false;
